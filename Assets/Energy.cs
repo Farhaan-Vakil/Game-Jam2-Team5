@@ -9,7 +9,8 @@ public class Energy : MonoBehaviour{
     public double interval;
     public GameObject EnergyUI;
     private UpdateEnergy updateScript;
-    
+    private DeathScript death;
+
     // Start is called before the first frame update
     void Start(){
         updateScript = EnergyUI.GetComponent<UpdateEnergy>();
@@ -22,7 +23,11 @@ public class Energy : MonoBehaviour{
         if (timeElapsed > interval){
             timeElapsed -= interval;
             energy--;
-            if (energy < 0) energy = 0;
+            if (energy <= 0)
+            {
+                energy = 0;
+                death.Respawn();
+            }
             updateScript.updateEnergy(energy);
         }
     }
