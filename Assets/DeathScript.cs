@@ -7,6 +7,8 @@ public class DeathScript : MonoBehaviour
 {
     public Vector2 respawn;
 
+    private int maxCheckpoint = 0;
+    
     void Start()
     {
         respawn = transform.position;
@@ -14,8 +16,14 @@ public class DeathScript : MonoBehaviour
 
     public void Respawn()
     {
-        GameObject.Find("Player").GetComponent<Energy>().energy = 11;
+        GetComponent<Energy>().refillEnergy();
         gameObject.transform.position = respawn;
+        
+        Debug.Log(GameObject.FindGameObjectsWithTag("Key").Length);
+        
+        foreach(GameObject key in GameObject.FindGameObjectsWithTag("Key")) {
+            key.GetComponent<Key>().resetKey(maxCheckpoint);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -23,6 +31,13 @@ public class DeathScript : MonoBehaviour
         if (coll.gameObject.tag == "Death")
         {
             Respawn();
+        }
+    }
+
+    public void setRespawn(int checkpointNum, Vector2 location){
+        if (checkpointNum > maxCheckpoint){
+            maxCheckpoint = checkpointNum;
+            respawn = location;
         }
     }
 }

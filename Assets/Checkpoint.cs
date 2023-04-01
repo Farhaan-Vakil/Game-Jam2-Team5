@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Checkpoint : MonoBehaviour{
+
+    public int checkPointNumber;
+
+    private bool activated = false;
+    
     private SpriteRenderer renderer;
     private DeathScript death;
 
@@ -20,11 +25,16 @@ public class Checkpoint : MonoBehaviour{
     }
 
     private void OnTriggerEnter2D(Collider2D other){
+
+        if (activated) return;
+        
         if (other.CompareTag("Player")){
             Debug.Log("Checkpoint reached");
             renderer.color = Color.blue;
-            death.respawn = transform.position;
-            GameObject.Find("Player").GetComponent<Energy>().energy = 11;
+            death.setRespawn(checkPointNumber, transform.position);
+            GameObject.FindWithTag("Player").GetComponent<Energy>().refillEnergy();
         }
+
+        activated = true;
     }
 }

@@ -1,34 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Energy : MonoBehaviour{
 
-    public int energy;
-    private double timeElapsed;
-    public double interval;
-    public GameObject EnergyUI;
-    private UpdateEnergy updateScript;
+    public double startEnergy = 100;
+    private double energy;
+    public double rate;
+
+    public GameObject energyBarObj;
+    private EnergyBar energyBarScript;
+
+    public GameObject EnergyTextObj;
+    private EnergyText energyTextScript;
+
     private DeathScript death;
 
     // Start is called before the first frame update
     void Start(){
-        updateScript = EnergyUI.GetComponent<UpdateEnergy>();
-        updateScript.updateEnergy(energy);
+        energyBarScript = energyBarObj.GetComponent<EnergyBar>();
+        energyTextScript = EnergyTextObj.GetComponent<EnergyText>();
+        death = GetComponent<DeathScript>();
+        energy = startEnergy;
     }
 
     // Update is called once per frame
     void Update(){
-        timeElapsed += Time.deltaTime;
-        if (timeElapsed > interval){
-            timeElapsed -= interval;
-            energy--;
-            if (energy <= 0)
-            {
-                energy = 0;
-                death.Respawn();
-            }
-            updateScript.updateEnergy(energy);
+        energy -= rate * Time.deltaTime;
+        energyBarScript.updateBar(energy, startEnergy);
+        energyTextScript.updateEnergyText(energy, startEnergy);
+        if (energy <= 0){
+            death.Respawn();
         }
+    }
+
+    public void refillEnergy(){
+        energy = startEnergy;
     }
 }
