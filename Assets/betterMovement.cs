@@ -4,34 +4,23 @@ using UnityEngine;
 
 public class betterMovement : MonoBehaviour
 {
-    public int speed = 10;
-
     public Rigidbody2D rb;
-  
+    private float movementX;
+    private float movementY;
+    public float speed = 0;
+    public float accel = 1f;
+
+    public float moveSpeed = 10f;
+
     public bool isGrounded = false;
     public Vector2 up;
 
-    public Animator animator;
 
-    void Update()
-    {
-        Vector3 horizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
-        transform.position = transform.position + horizontal * speed * Time.deltaTime;
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            rb.AddForce(up, ForceMode2D.Impulse);
-            isGrounded = false;
-        }
-        animator.SetFloat("Horizontal", Input.GetAxis("Horizontal"));
-
-    }
 
     private void Start()
     {
-        up = new Vector2(0f, 10f);
+        up = new Vector2(0f, 12f);
     }
-
     void OnCollisionStay2D()
     {
         isGrounded = true;
@@ -42,4 +31,44 @@ public class betterMovement : MonoBehaviour
         isGrounded = false;
     }
 
+
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.AddForce(up, ForceMode2D.Impulse);
+            isGrounded = false;
+        }
+
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+
+        }
+        else
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
+
+        // if (Input.GetKey(KeyCode.W))
+        //     transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime, Camera.main.transform);
+        //
+        // if (Input.GetKey(KeyCode.D))
+        //     transform.Translate(Vector3.right * Time.deltaTime * moveSpeed, Camera.main.transform);
+        //
+        // if (Input.GetKey(KeyCode.A))
+        //     transform.Translate(-Vector3.right * Time.deltaTime * moveSpeed, Camera.main.transform);
+        //
+        // if (Input.GetKey(KeyCode.S))
+        //     transform.Translate(-Vector3.forward * moveSpeed * Time.deltaTime, Camera.main.transform);
+
+
+    }
 }
